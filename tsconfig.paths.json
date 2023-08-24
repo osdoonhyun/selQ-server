@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["./src/*"],
+      "@questions/*": ["./src/questions/*"],
+      "@answers/*": ["./src/answers/*"],
+      "@hints/*": ["./src/hints/*"]
+    }
+  }
+}
