@@ -7,6 +7,6 @@ export class Answer extends CommonEntity {
   @ManyToOne(() => Question, (question: Question) => question.answers)
   public question: Question;
 
-  @Column('text', { array: true })
-  public answers: string[];
+  @Column()
+  public answers: string;
 }

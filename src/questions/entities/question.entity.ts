@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { CommonEntity } from '@root/common/entities/common.entity';
 import { Category } from '@questions/entities/category.enum';
 import { Answer } from '@answers/entities/answer.entity';
-import { Hint } from '@hints/entities/hint.entity';
 
 @Entity()
 export class Question extends CommonEntity {
@@ -22,6 +21,6 @@ export class Question extends CommonEntity {
   @OneToMany(() => Answer, (answer: Answer) => answer.question)
   public answers: Answer[];
 
-  @OneToMany(() => Hint, (hint: Hint) => hint.question)
-  public hints: Hint[];
+  @Column('text', { array: true })
+  public hints: string[];
 }

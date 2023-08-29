@@ -30,9 +30,7 @@ export class QuestionsService {
       'questions',
     );
 
-    queryBuilder
-      .leftJoinAndSelect('questions.answers', 'answers')
-      .leftJoinAndSelect('questions.hints', 'hints');
+    queryBuilder.leftJoinAndSelect('questions.answers', 'answers');
 
     if (importance) {
       queryBuilder.where('questions.importance = :importance', { importance });
@@ -57,7 +55,7 @@ export class QuestionsService {
   async getQuestionById(id: string): Promise<Question> {
     const question = await this.questionRepository.findOne({
       where: { id },
-      relations: ['answers', 'hints'],
+      relations: ['answers'],
     });
     if (question) return question;
     throw new HttpException(
