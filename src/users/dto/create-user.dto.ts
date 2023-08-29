@@ -13,7 +13,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  name: string;
+  username: string;
 
   @IsString()
   @IsNotEmpty()
@@ -23,10 +23,7 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
-  profileImg?: string;
-
-  @IsString()
-  provider?: Provider = Provider.LOCAL;
+  provider?: Provider;
 }
 
 export default CreateUserDto;
