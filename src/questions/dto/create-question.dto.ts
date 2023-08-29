@@ -18,7 +18,6 @@ export class CreateQuestionDto {
   category: Category;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty()
-  hints: string[];
+  hints?: string[];
 }

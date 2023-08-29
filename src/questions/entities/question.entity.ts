@@ -21,6 +21,6 @@ export class Question extends CommonEntity {
   @OneToMany(() => Answer, (answer: Answer) => answer.question)
   public answers: Answer[];
 
-  @Column('text', { array: true })
-  public hints: string[];
+  @Column('text', { array: true, nullable: true })
+  public hints?: string[];
 }
