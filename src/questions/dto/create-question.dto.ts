@@ -17,7 +17,6 @@ export class CreateQuestionDto {
   @ApiProperty()
   category: Category;
 
-  @IsString()
   @ApiProperty()
   hints?: string[];
 }
