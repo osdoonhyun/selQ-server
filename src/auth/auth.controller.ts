@@ -32,9 +32,30 @@ export class AuthController {
     return { user, token };
   }
 
+  @Post('email/send')
+  async initiateEmailAddressVerification(
+    @Body('email') email: string,
+  ): Promise<any> {
+    // return await this.authService.initiateEmailAddressVerification(
+    //     emailDto.email,
+    // );
+  }
+
+  @Post('email/check')
+  async checkEmail(
+    @Body('email') email: string,
+    @Body('code') code: string,
+  ): Promise<any> {
+    // return await this.authService.confirmEmailVerification(email, code);
+    // return await this.smsService.confirmPhoneVerification(
+    //   verificationSmsDto.phone,
+    //   verificationSmsDto.code,
+    // );
+  }
+
   @UseGuards(JwtAccessGuard)
   @Get()
-  authenticate(@Req() req: RequestWithUser): User {
+  authenticate(@Req() req: RequestWithUser) {
     return req.user;
   }
 }
