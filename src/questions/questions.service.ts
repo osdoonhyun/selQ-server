@@ -7,6 +7,7 @@ import { PageDto } from '@root/common/dtos/page.dto';
 import { PageMetaDto } from '@root/common/dtos/page-meta.dto';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { Category } from '@questions/entities/category.enum';
+import {UpdateQuestionDto} from "@questions/dto/update-question.dto";
 
 @Injectable()
 export class QuestionsService {
@@ -62,5 +63,20 @@ export class QuestionsService {
       'Question with this id does not exist',
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async updateQuestion(id: string, updateQuestionDto: UpdateQuestionDto): Promise<Question> {
+    await this.questionRepository.update(id, updateQuestionDto);
+    const updatedPost = await this.questionRepository.findOneBy({ id });
+    if (updatedPost) return updatedPost;
+    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+  }
+
+  async deleteQuestion(id: string): Promise<boolean> {
+    const deleteResponse = await this.questionRepository.delete(id);
+    if (!deleteResponse.affected) {
+      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    }
+    return true
   }
 }
