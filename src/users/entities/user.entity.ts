@@ -4,6 +4,7 @@ import { Provider } from '@root/users/entities/provider.enum';
 import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
+import {Role} from "@root/users/entities/role.enum";
 
 @Entity()
 export class User extends CommonEntity {
@@ -18,6 +19,14 @@ export class User extends CommonEntity {
 
   @Column({ nullable: true })
   public profileImg?: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.USER],
+  })
+  public roles: Role[];
 
   @Column({
     type: 'enum',

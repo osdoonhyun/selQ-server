@@ -1,11 +1,13 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
-  ParseArrayPipe, Patch,
+  Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { QuestionsService } from '@questions/questions.service';
 import { CreateQuestionDto } from '@questions/dto/create-question.dto';
@@ -14,14 +16,17 @@ import { ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
 import { Category } from '@questions/entities/category.enum';
-import { FindOneParams } from "@questions/entities/findOneParams";
-import { UpdateQuestionDto } from "@questions/dto/update-question.dto";
+import { FindOneParams } from '@questions/entities/findOneParams';
+import { UpdateQuestionDto } from '@questions/dto/update-question.dto';
+import { RoleGuard } from '@root/auth/guards /role.guard';
+import { Role } from '@root/users/entities/role.enum';
 
 @Controller('questions')
 @ApiTags('Questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
+  @UseGuards(RoleGuard(Role.ADMIN))
   @Post()
   async createQuestion(
     @Body() createQuestionDto: CreateQuestionDto,
@@ -46,17 +51,18 @@ export class QuestionsController {
     return await this.questionsService.getQuestionById(id);
   }
 
+  @UseGuards(RoleGuard(Role.ADMIN))
   @Patch(':id')
   async updateQuestion(
-      @Param() {id}: FindOneParams,
-      @Body() updateQuestionDto: UpdateQuestionDto
+    @Param() { id }: FindOneParams,
+    @Body() updateQuestionDto: UpdateQuestionDto,
   ): Promise<Question> {
-    return await this.questionsService.updateQuestion(id, updateQuestionDto)
+    return await this.questionsService.updateQuestion(id, updateQuestionDto);
   }
 
+  @UseGuards(RoleGuard(Role.ADMIN))
   @Delete(':id')
   async deletePost(@Param() { id }: FindOneParams): Promise<boolean> {
     return this.questionsService.deleteQuestion(id);
   }
-
 }
