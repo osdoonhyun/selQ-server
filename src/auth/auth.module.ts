@@ -7,9 +7,16 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAccessTokenStrategy } from '@root/auth/strategies/jwt-access_token.strategy';
+import { EmailModule } from '@root/email/email.module';
 
 @Module({
-  imports: [PassportModule, ConfigModule, JwtModule.register({}), UsersModule],
+  imports: [
+    PassportModule,
+    ConfigModule,
+    JwtModule.register({}),
+    UsersModule,
+    EmailModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService, LocalAuthStrategy, JwtAccessTokenStrategy],
 })

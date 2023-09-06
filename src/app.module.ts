@@ -7,6 +7,8 @@ import { AnswersModule } from '@answers/answers.module';
 import { AppconfigModule } from '@root/appconfig/appconfig.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { AuthModule } from './auth/auth.module';
     AppconfigModule,
     UsersModule,
     AuthModule,
+    EmailModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

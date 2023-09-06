@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { UsersService } from '@root/users/users.service';
 import { User } from '@root/users/entities/user.entity';
 import CreateUserDto from '@root/users/dto/create-user.dto';
@@ -7,6 +13,9 @@ import { PostgresErrorCode } from '@root/database/postgresErrorCodes.enum';
 import { TokenPayloadInterface } from '@root/auth/interfaces /tokenPayload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { EmailService } from '@root/email/email.service';
+import { CACHE_MANAGER } from '@nestjs/common/cache';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +23,8 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
+    private readonly emailService: EmailService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   public async registerUser(createUserDto: CreateUserDto): Promise<User> {
@@ -70,5 +81,36 @@ export class AuthService {
     // return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
     //   'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
     // )}`;
+  }
+
+  async initiateEmailAddressVerification(email: string): Promise<boolean> {
+    const generateNumber = this.generateOTP();
+    await this.cacheManager.set(email, generateNumber);
+    await this.emailService.sendMail({
+      to: email,
+      subject: 'Verification Email Address - selQ',
+      text: `The confirmation number is as follows. ${generateNumber}`,
+    });
+    return true;
+  }
+
+  async confirmEmailVerification(
+    email: string,
+    code: string,
+  ): Promise<boolean> {
+    const emailCodeByRedis = await this.cacheManager.get(email);
+    if (emailCodeByRedis !== code) {
+      throw new BadRequestException('Wrong code provided');
+    }
+    await this.cacheManager.del(email);
+    return true;
+  }
+
+  generateOTP() {
+    let OTP = '';
+    for (let i = 1; i <= 6; i++) {
+      OTP += Math.floor(Math.random() * 10);
+    }
+    return OTP;
   }
 }

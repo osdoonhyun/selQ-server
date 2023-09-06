@@ -35,22 +35,16 @@ export class AuthController {
   @Post('email/send')
   async initiateEmailAddressVerification(
     @Body('email') email: string,
-  ): Promise<any> {
-    // return await this.authService.initiateEmailAddressVerification(
-    //     emailDto.email,
-    // );
+  ): Promise<boolean> {
+    return await this.authService.initiateEmailAddressVerification(email);
   }
 
   @Post('email/check')
   async checkEmail(
     @Body('email') email: string,
     @Body('code') code: string,
-  ): Promise<any> {
-    // return await this.authService.confirmEmailVerification(email, code);
-    // return await this.smsService.confirmPhoneVerification(
-    //   verificationSmsDto.phone,
-    //   verificationSmsDto.code,
-    // );
+  ): Promise<boolean> {
+    return await this.authService.confirmEmailVerification(email, code);
   }
 
   @UseGuards(JwtAccessGuard)
