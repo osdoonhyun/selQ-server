@@ -11,6 +11,8 @@ import * as redisStore from 'cache-manager-redis-store';
       useFactory: async (cfg: ConfigService) => ({
         store: redisStore,
         host: cfg.get<string>('REDIS_HOST'),
+        user: cfg.get<string>('REDIS_USER'),
+        password: cfg.get<string>('REDIS_PASSWORD'),
         port: cfg.get<number>('REDIS_PORT'),
         ttl: cfg.get('REDIS_TTL'),
       }),

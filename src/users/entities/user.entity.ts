@@ -12,7 +12,6 @@ import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Role } from '@root/users/entities/role.enum';
-import { Term } from '@root/users/entities/term.entity';
 
 @Entity()
 export class User extends CommonEntity {
