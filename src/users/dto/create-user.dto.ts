@@ -1,11 +1,14 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MinLength,
 } from 'class-validator';
 import { Provider } from '@root/users/entities/provider.enum';
+import { Column } from 'typeorm';
 
 export class CreateUserDto {
   @IsEmail()
@@ -24,6 +27,26 @@ export class CreateUserDto {
 
   @IsString()
   provider?: Provider;
+
+  @IsBoolean()
+  @IsOptional()
+  public fourteenOverAgree?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  public termsOfUseAgree?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  public personalInfoAgree?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  public marketingConsent?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  public smsAndEventAgree?: boolean;
 }
 
 export default CreateUserDto;

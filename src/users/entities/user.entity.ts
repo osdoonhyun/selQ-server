@@ -1,10 +1,18 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 import { CommonEntity } from '@root/common/entities/common.entity';
 import { Provider } from '@root/users/entities/provider.enum';
 import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
-import {Role} from "@root/users/entities/role.enum";
+import { Role } from '@root/users/entities/role.enum';
+import { Term } from '@root/users/entities/term.entity';
 
 @Entity()
 export class User extends CommonEntity {
@@ -34,6 +42,21 @@ export class User extends CommonEntity {
     default: Provider.LOCAL,
   })
   public provider: Provider;
+
+  @Column({ default: false })
+  public fourteenOverAgree: boolean;
+
+  @Column({ default: false })
+  public termsOfUseAgree: boolean;
+
+  @Column({ default: false })
+  public personalInfoAgree: boolean;
+
+  @Column({ default: false })
+  public marketingConsent: boolean;
+
+  @Column({ default: false })
+  public smsAndEventAgree: boolean;
 
   @BeforeInsert()
   @BeforeUpdate()
