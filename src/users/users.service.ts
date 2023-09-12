@@ -7,6 +7,8 @@ import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageMetaDto } from '@root/common/dtos/page-meta.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
 import { Question } from '@questions/entities/question.entity';
+import { FindOneParams } from '@questions/entities/findOneParams';
+import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -53,5 +55,12 @@ export class UsersService {
     const newUser = await this.usersRepository.create(createUserDto);
     await this.usersRepository.save(newUser);
     return newUser;
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    await this.usersRepository.update(id, updateUserDto);
+    const updatedUser = await this.usersRepository.findOneBy({ id });
+    if (updatedUser) return updatedUser;
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 }

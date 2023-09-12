@@ -1,9 +1,22 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@root/users/entities/user.entity';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
-import { Question } from '@questions/entities/question.entity';
+import { RoleGuard } from '@root/auth/guards /role.guard';
+import { Role } from '@root/users/entities/role.enum';
+import { FindOneParams } from '@questions/entities/findOneParams';
+import CreateUserDto from '@root/users/dto/create-user.dto';
+import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,5 +33,14 @@ export class UsersController {
   async verifyEmailAddress(@Body('email') email: string): Promise<User> {
     const user = await this.usersService.getUserByEmail(email);
     return user;
+  }
+
+  @UseGuards(RoleGuard(Role.ADMIN))
+  @Patch('/:id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.updateUser(id, updateUserDto);
   }
 }

@@ -1,4 +1,22 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
+import { Provider } from '@root/users/entities/provider.enum';
+import { Column } from 'typeorm';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto {
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  username: string;
+}

@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '@root/email/email.service';
 import { CACHE_MANAGER } from '@nestjs/common/cache';
 import { Cache } from 'cache-manager';
+import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -112,5 +113,9 @@ export class AuthService {
       OTP += Math.floor(Math.random() * 10);
     }
     return OTP;
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    return await this.usersService.updateUser(id, updateUserDto);
   }
 }

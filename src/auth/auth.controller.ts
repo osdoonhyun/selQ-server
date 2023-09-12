@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -13,6 +14,7 @@ import { User } from '@root/users/entities/user.entity';
 import { LocalAuthGuard } from '@root/auth/guards /local-auth.guard';
 import { RequestWithUser } from '@root/auth/interfaces /requestWithUser.interface';
 import { JwtAccessGuard } from '@root/auth/guards /jwt-access.guard';
+import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -51,5 +53,14 @@ export class AuthController {
   @Get()
   authenticate(@Req() req: RequestWithUser) {
     return req.user;
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Patch('update')
+  async updateMySelf(
+    @Req() req: RequestWithUser,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.authService.updateUser(req.user.id, updateUserDto);
   }
 }

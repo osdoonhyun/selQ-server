@@ -54,7 +54,7 @@ export class QuestionsController {
   @UseGuards(RoleGuard(Role.ADMIN))
   @Patch(':id')
   async updateQuestion(
-    @Param() { id }: FindOneParams,
+    @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ): Promise<Question> {
     return await this.questionsService.updateQuestion(id, updateQuestionDto);
