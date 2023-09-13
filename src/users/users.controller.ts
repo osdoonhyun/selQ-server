@@ -15,8 +15,10 @@ import { PageDto } from '@root/common/dtos/page.dto';
 import { RoleGuard } from '@root/auth/guards /role.guard';
 import { Role } from '@root/users/entities/role.enum';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

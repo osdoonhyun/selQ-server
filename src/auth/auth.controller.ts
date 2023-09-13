@@ -17,8 +17,11 @@ import { JwtAccessGuard } from '@root/auth/guards /jwt-access.guard';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 import { UsersService } from '@root/users/users.service';
 import JwtRefreshGuard from '@root/auth/guards /jwt-refresh.guard';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -33,6 +36,7 @@ export class AuthController {
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ApiBody({ type: LogInUserDto })
   async logIn(@Req() req: RequestWithUser) {
     const { user } = req;
     const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
@@ -44,6 +48,16 @@ export class AuthController {
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
 
     req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    return user;
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  async getRefreshToken(@Req() req: RequestWithUser) {
+    const { user } = req;
+    const accessTokenCookie =
+      await this.authService.getCookieWithJWTAccessToken(user.id);
+    req.res.setHeader('Set-Cookie', accessTokenCookie);
     return user;
   }
 
@@ -63,28 +77,12 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessGuard)
-  @Get()
-  authenticate(@Req() req: RequestWithUser) {
-    return req.user;
-  }
-
-  @UseGuards(JwtAccessGuard)
   @Patch('update')
   async updateMySelf(
     @Req() req: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.authService.updateUser(req.user.id, updateUserDto);
-  }
-
-  @UseGuards(JwtRefreshGuard)
-  @Get('refresh')
-  async getRefreshToken(@Req() req: RequestWithUser) {
-    const { user } = req;
-    const accessTokenCookie =
-      await this.authService.getCookieWithJWTAccessToken(user.id);
-    req.res.setHeader('Set-Cookie', accessTokenCookie);
-    return user;
   }
 
   @UseGuards(JwtAccessGuard)
@@ -94,5 +92,11 @@ export class AuthController {
     const { user } = req;
     await this.usersService.removeRefreshToken(user.id);
     req.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get()
+  authenticate(@Req() req: RequestWithUser) {
+    return req.user;
   }
 }
