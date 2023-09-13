@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAccessTokenStrategy } from '@root/auth/strategies/jwt-access-token.strategy';
 import { EmailModule } from '@root/email/email.module';
+import { JwtRefreshTokenStrategy } from '@root/auth/strategies/jwt-refresh-token.strategy';
 
 @Module({
   imports: [
@@ -18,6 +19,11 @@ import { EmailModule } from '@root/email/email.module';
     EmailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalAuthStrategy, JwtAccessTokenStrategy],
+  providers: [
+    AuthService,
+    LocalAuthStrategy,
+    JwtAccessTokenStrategy,
+    JwtRefreshTokenStrategy,
+  ],
 })
 export class AuthModule {}
