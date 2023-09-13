@@ -15,8 +15,9 @@ export class User extends CommonEntity {
   @Column()
   public email: string;
 
-  @Column()
-  public password: string;
+  @Column({ nullable: true })
+  @Exclude()
+  public password?: string;
 
   @Column({ nullable: true })
   public profileImg?: string;
