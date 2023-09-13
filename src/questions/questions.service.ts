@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '@questions/entities/question.entity';
@@ -7,7 +12,7 @@ import { PageDto } from '@root/common/dtos/page.dto';
 import { PageMetaDto } from '@root/common/dtos/page-meta.dto';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { Category } from '@questions/entities/category.enum';
-import {UpdateQuestionDto} from "@questions/dto/update-question.dto";
+import { UpdateQuestionDto } from '@questions/dto/update-question.dto';
 
 @Injectable()
 export class QuestionsService {
@@ -65,7 +70,10 @@ export class QuestionsService {
     );
   }
 
-  async updateQuestion(id: string, updateQuestionDto: UpdateQuestionDto): Promise<Question> {
+  async updateQuestion(
+    id: string,
+    updateQuestionDto: UpdateQuestionDto,
+  ): Promise<Question> {
     await this.questionRepository.update(id, updateQuestionDto);
     const updatedPost = await this.questionRepository.findOneBy({ id });
     if (updatedPost) return updatedPost;
@@ -75,8 +83,8 @@ export class QuestionsService {
   async deleteQuestion(id: string): Promise<boolean> {
     const deleteResponse = await this.questionRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`Question with ID ${id} not found`);
     }
-    return true
+    return true;
   }
 }

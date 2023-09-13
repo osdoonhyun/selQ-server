@@ -18,7 +18,9 @@ export class Question extends CommonEntity {
   @Column({ default: 1 })
   public importance: number;
 
-  @OneToMany(() => Answer, (answer: Answer) => answer.question)
+  @OneToMany(() => Answer, (answer: Answer) => answer.question, {
+    cascade: true,
+  })
   public answers: Answer[];
 
   @Column('text', { array: true, nullable: true })

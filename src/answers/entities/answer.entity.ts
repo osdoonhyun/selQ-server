@@ -4,7 +4,9 @@ import { Question } from '@questions/entities/question.entity';
 
 @Entity()
 export class Answer extends CommonEntity {
-  @ManyToOne(() => Question, (question: Question) => question.answers)
+  @ManyToOne(() => Question, (question: Question) => question.answers, {
+    onDelete: 'CASCADE',
+  })
   public question: Question;
 
   @Column()
