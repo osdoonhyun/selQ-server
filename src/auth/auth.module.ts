@@ -6,7 +6,7 @@ import { LocalAuthStrategy } from '@root/auth/strategies/local-auth.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtAccessTokenStrategy } from '@root/auth/strategies/jwt-access_token.strategy';
+import { JwtAccessTokenStrategy } from '@root/auth/strategies/jwt-access-token.strategy';
 import { EmailModule } from '@root/email/email.module';
 
 @Module({

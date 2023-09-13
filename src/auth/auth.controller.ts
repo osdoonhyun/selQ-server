@@ -15,10 +15,15 @@ import { LocalAuthGuard } from '@root/auth/guards /local-auth.guard';
 import { RequestWithUser } from '@root/auth/interfaces /requestWithUser.interface';
 import { JwtAccessGuard } from '@root/auth/guards /jwt-access.guard';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
+import { UsersService } from '@root/users/users.service';
+import JwtRefreshGuard from '@root/auth/guards /jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('signup')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -30,8 +35,16 @@ export class AuthController {
   @Post('login')
   async logIn(@Req() req: RequestWithUser) {
     const { user } = req;
-    const token = this.authService.getCookieWithJWTAccessToken(user.id);
-    return { user, token };
+    const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
+      user.id,
+    );
+    const { cookie: refreshTokenCookie, token: refreshToken } =
+      this.authService.getCookieWithJWTRefreshToken(user.id);
+
+    await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+
+    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    return user;
   }
 
   @Post('email/send')
@@ -62,5 +75,24 @@ export class AuthController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.authService.updateUser(req.user.id, updateUserDto);
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  async getRefreshToken(@Req() req: RequestWithUser) {
+    const { user } = req;
+    const accessTokenCookie =
+      await this.authService.getCookieWithJWTAccessToken(user.id);
+    req.res.setHeader('Set-Cookie', accessTokenCookie);
+    return user;
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('logout')
+  @HttpCode(200)
+  async logOut(@Req() req: RequestWithUser) {
+    const { user } = req;
+    await this.usersService.removeRefreshToken(user.id);
+    req.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
   }
 }

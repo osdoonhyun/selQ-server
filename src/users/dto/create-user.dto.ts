@@ -8,7 +8,6 @@ import {
   MinLength,
 } from 'class-validator';
 import { Provider } from '@root/users/entities/provider.enum';
-import { Column } from 'typeorm';
 
 export class CreateUserDto {
   @IsEmail()

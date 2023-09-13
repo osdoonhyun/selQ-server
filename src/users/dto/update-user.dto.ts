@@ -1,14 +1,4 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-  MinLength,
-} from 'class-validator';
-import { Provider } from '@root/users/entities/provider.enum';
-import { Column } from 'typeorm';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
   @IsEmail()

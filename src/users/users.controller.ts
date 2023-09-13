@@ -14,8 +14,6 @@ import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
 import { RoleGuard } from '@root/auth/guards /role.guard';
 import { Role } from '@root/users/entities/role.enum';
-import { FindOneParams } from '@questions/entities/findOneParams';
-import CreateUserDto from '@root/users/dto/create-user.dto';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 
 @Controller('users')

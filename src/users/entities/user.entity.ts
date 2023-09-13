@@ -1,17 +1,11 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import { CommonEntity } from '@root/common/entities/common.entity';
 import { Provider } from '@root/users/entities/provider.enum';
 import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Role } from '@root/users/entities/role.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends CommonEntity {
@@ -41,6 +35,12 @@ export class User extends CommonEntity {
     default: Provider.LOCAL,
   })
   public provider: Provider;
+
+  @Column({
+    nullable: true,
+  })
+  @Exclude()
+  public currentHashedRefreshToken?: string;
 
   @Column({ default: false })
   public fourteenOverAgree: boolean;

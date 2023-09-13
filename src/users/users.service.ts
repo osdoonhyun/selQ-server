@@ -6,9 +6,8 @@ import { CreateUserDto } from '@root/users/dto/create-user.dto';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageMetaDto } from '@root/common/dtos/page-meta.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
-import { Question } from '@questions/entities/question.entity';
-import { FindOneParams } from '@questions/entities/findOneParams';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -18,9 +17,6 @@ export class UsersService {
   ) {}
 
   async getUserList(pageOptionsDto: PageOptionsDto): Promise<PageDto<User>> {
-    // const users = await this.usersRepository.find();
-    // return users;
-
     const queryBuilder = await this.usersRepository.createQueryBuilder('users');
     queryBuilder
       .orderBy('users.createdAt', pageOptionsDto.order)
@@ -62,5 +58,37 @@ export class UsersService {
     const updatedUser = await this.usersRepository.findOneBy({ id });
     if (updatedUser) return updatedUser;
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  }
+
+  async setCurrentRefreshToken(
+    refreshToken: string,
+    userId: string,
+  ): Promise<void> {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.usersRepository.update(userId, {
+      currentHashedRefreshToken,
+    });
+  }
+
+  async getUserIfRefreshTokenMatches(
+    refreshToken: string,
+    userId: string,
+  ): Promise<User> {
+    const user = await this.getUserById(userId);
+
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken,
+      user.currentHashedRefreshToken,
+    );
+
+    if (isRefreshTokenMatching) {
+      return user;
+    }
+  }
+
+  async removeRefreshToken(userId: string) {
+    return this.usersRepository.update(userId, {
+      currentHashedRefreshToken: null,
+    });
   }
 }
