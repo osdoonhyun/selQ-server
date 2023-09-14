@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { RedisModule } from './redis/redis.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RedisModule } from './redis/redis.module';
     AuthModule,
     EmailModule,
     RedisModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService],
