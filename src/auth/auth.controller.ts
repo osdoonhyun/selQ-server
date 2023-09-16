@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,8 +18,16 @@ import { JwtAccessGuard } from '@root/auth/guards /jwt-access.guard';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 import { UsersService } from '@root/users/users.service';
 import JwtRefreshGuard from '@root/auth/guards /jwt-refresh.guard';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
+import { Response } from 'express';
+import { string } from '@hapi/joi';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -29,6 +38,15 @@ export class AuthController {
   ) {}
 
   @Post('signup')
+  @ApiCreatedResponse({
+    description: 'the record has been seccuess',
+    type: User,
+  })
+  @ApiResponse({ status: 401, description: 'forbidden' })
+  @ApiOperation({
+    summary: '회원가입',
+    description: '회원가입',
+  })
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.authService.registerUser(createUserDto);
   }
@@ -36,8 +54,14 @@ export class AuthController {
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ApiResponse({ status: 200, description: 'login success' })
+  @ApiResponse({ status: 401, description: 'forbidden' })
+  @ApiOperation({
+    summary: '로그인',
+    description: '로그인',
+  })
   @ApiBody({ type: LogInUserDto })
-  async logIn(@Req() req: RequestWithUser) {
+  async logIn(@Req() req: RequestWithUser, @Res() response: Response) {
     const { user } = req;
     const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
       user.id,
@@ -47,7 +71,7 @@ export class AuthController {
 
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
 
-    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
     return user;
   }
 
@@ -62,6 +86,12 @@ export class AuthController {
   }
 
   @Post('email/send')
+  @ApiResponse({ status: 200, description: 'email verification send success' })
+  @ApiResponse({ status: 401, description: 'forbidden' })
+  @ApiOperation({
+    summary: 'email 인증 전송 성공',
+    description: 'email 인증 전송 성공',
+  })
   async initiateEmailAddressVerification(
     @Body('email') email: string,
   ): Promise<boolean> {
@@ -69,6 +99,15 @@ export class AuthController {
   }
 
   @Post('email/check')
+  @ApiResponse({
+    status: 200,
+    description: 'email verification confirm success',
+  })
+  @ApiResponse({ status: 401, description: 'forbidden' })
+  @ApiOperation({
+    summary: 'email 인증 확인 성공',
+    description: 'email 인증 확인 성공',
+  })
   async checkEmail(
     @Body('email') email: string,
     @Body('code') code: string,
