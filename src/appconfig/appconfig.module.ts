@@ -25,6 +25,7 @@ import * as Joi from '@hapi/joi';
         REDIS_PORT: Joi.number().required(),
         REDIS_TTL: Joi.number().required(),
 
+        FRONTEND_URL: Joi.string().required(),
         SERVER_PORT: Joi.number(),
       }),
     }),
