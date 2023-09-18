@@ -79,7 +79,7 @@ export class AuthService {
       )}`,
     });
     // return token;
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    return `Authentication=${token}; Path=/; Max-Age=${this.configService.get(
       'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
     )}`;
   }
@@ -92,7 +92,7 @@ export class AuthService {
         'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
       )}`,
     });
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    const cookie = `Refresh=${token}; Path=/; Max-Age=${this.configService.get(
       'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
     )}`;
     return { cookie, token };
@@ -135,8 +135,8 @@ export class AuthService {
 
   public getCookiesForLogOut() {
     return [
-      'Authentication=; HttpOnly; Path=/; Max-Age=0',
-      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+      'Authentication=; Path=/; Max-Age=0',
+      'Refresh=; Path=/; Max-Age=0',
     ];
   }
 }
