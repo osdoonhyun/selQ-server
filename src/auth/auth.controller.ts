@@ -27,7 +27,6 @@ import {
 } from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
 import { Response } from 'express';
-import { string } from '@hapi/joi';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -61,7 +60,7 @@ export class AuthController {
     description: '로그인',
   })
   @ApiBody({ type: LogInUserDto })
-  async logIn(@Req() req: RequestWithUser, @Res() response: Response) {
+  async logIn(@Req() req: RequestWithUser) {
     const { user } = req;
     const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
       user.id,
@@ -71,7 +70,7 @@ export class AuthController {
 
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
 
-    response.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
     return user;
   }
 
