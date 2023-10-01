@@ -151,14 +151,14 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   async googleLoginCallback(@Req() req: RequestWithUser): Promise<any> {
-    // const { user } = req;
-    // const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
-    //     user.id,
-    // );
-    // const { cookie: refreshTokenCookie, token: refreshToken } =
-    //     this.authService.getCookieWithJWTRefreshToken(user.id);
-    // await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
-    // req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
-    // return user;
+    const { user } = req;
+    const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
+      user.id,
+    );
+    const { cookie: refreshTokenCookie, token: refreshToken } =
+      this.authService.getCookieWithJWTRefreshToken(user.id);
+    await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    return user;
   }
 }
