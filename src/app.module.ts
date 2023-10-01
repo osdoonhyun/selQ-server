@@ -5,8 +5,8 @@ import { DatabaseModule } from '@root/database/database.module';
 import { QuestionsModule } from '@questions/questions.module';
 import { AnswersModule } from '@answers/answers.module';
 import { AppconfigModule } from '@root/appconfig/appconfig.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '@root/auth/auth.module';
+import { UsersModule } from '@root/users/users.module';
 import { EmailModule } from './email/email.module';
 import { RedisModule } from './redis/redis.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
@@ -15,11 +15,10 @@ import { BookmarkModule } from './bookmark/bookmark.module';
   imports: [
     AppconfigModule,
     DatabaseModule,
+    AuthModule,
+    UsersModule,
     QuestionsModule,
     AnswersModule,
-    AppconfigModule,
-    UsersModule,
-    AuthModule,
     EmailModule,
     RedisModule,
     BookmarkModule,

@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtAccessTokenStrategy } from '@root/auth/strategies/jwt-access-token.strategy';
 import { EmailModule } from '@root/email/email.module';
 import { JwtRefreshTokenStrategy } from '@root/auth/strategies/jwt-refresh-token.strategy';
+import { GoogleAuthStrategy } from '@root/auth/strategies/google-auth.strategy';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtRefreshTokenStrategy } from '@root/auth/strategies/jwt-refresh-token
     LocalAuthStrategy,
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
+    GoogleAuthStrategy,
   ],
 })
 export class AuthModule {}

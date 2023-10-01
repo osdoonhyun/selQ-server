@@ -46,7 +46,7 @@ export class QuestionsService {
       queryBuilder.where('questions.category = :category', { category });
     }
 
-    queryBuilder
+    await queryBuilder
       .orderBy('questions.createdAt', pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);

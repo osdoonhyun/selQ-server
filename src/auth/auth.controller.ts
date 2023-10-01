@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Patch,
   Post,
   Req,
@@ -27,6 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
 import { Response } from 'express';
+import { GoogleAuthGuard } from '@root/auth/guards /google-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -136,5 +138,27 @@ export class AuthController {
   @Get()
   authenticate(@Req() req: RequestWithUser) {
     return req.user;
+  }
+
+  @HttpCode(200)
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  async googleLogin(): Promise<any> {
+    return HttpStatus.OK;
+  }
+
+  @HttpCode(200)
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleLoginCallback(@Req() req: RequestWithUser): Promise<any> {
+    // const { user } = req;
+    // const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
+    //     user.id,
+    // );
+    // const { cookie: refreshTokenCookie, token: refreshToken } =
+    //     this.authService.getCookieWithJWTRefreshToken(user.id);
+    // await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+    // req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    // return user;
   }
 }
