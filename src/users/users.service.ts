@@ -8,6 +8,7 @@ import { PageMetaDto } from '@root/common/dtos/page-meta.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
 import { UpdateUserDto } from '@root/users/dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { Answer } from '@answers/entities/answer.entity';
 
 @Injectable()
 export class UsersService {

@@ -27,7 +27,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
-import { Response } from 'express';
 import { GoogleAuthGuard } from '@root/auth/guards /google-auth.guard';
 
 @Controller('auth')
