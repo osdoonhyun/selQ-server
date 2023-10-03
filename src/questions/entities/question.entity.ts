@@ -2,7 +2,6 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from '@root/common/entities/common.entity';
 import { Category } from '@questions/entities/category.enum';
 import { Answer } from '@answers/entities/answer.entity';
-import { Bookmark } from '@root/bookmark/entities/bookmark.entity';
 
 @Entity()
 export class Question extends CommonEntity {

@@ -6,7 +6,6 @@ import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Role } from '@root/users/entities/role.enum';
 import { Exclude } from 'class-transformer';
-import { Bookmark } from '@root/bookmark/entities/bookmark.entity';
 
 @Entity()
 export class User extends CommonEntity {
@@ -37,9 +36,6 @@ export class User extends CommonEntity {
     default: Provider.LOCAL,
   })
   public provider: Provider;
-
-  @OneToMany((type) => Bookmark, (bookmark: Bookmark) => bookmark.user)
-  public bookmarks: Bookmark[];
 
   @Column({
     nullable: true,

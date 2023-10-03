@@ -9,7 +9,7 @@ import { AuthModule } from '@root/auth/auth.module';
 import { UsersModule } from '@root/users/users.module';
 import { EmailModule } from './email/email.module';
 import { RedisModule } from './redis/redis.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
+import { TerminusModule } from '@nestjs/terminus';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
     AnswersModule,
     EmailModule,
     RedisModule,
-    BookmarkModule,
+    TerminusModule,
   ],
   controllers: [AppController],
   providers: [AppService],
