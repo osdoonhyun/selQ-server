@@ -159,6 +159,9 @@ export class AuthController {
       this.authService.getCookieWithJWTRefreshToken(user.id);
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
     req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    // return user;
+    const mainPageUrl = 'http://localhost:3000';
+    req.res.redirect(mainPageUrl);
     return user;
   }
 }
