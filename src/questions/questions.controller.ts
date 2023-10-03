@@ -12,7 +12,7 @@ import {
 import { QuestionsService } from '@questions/questions.service';
 import { CreateQuestionDto } from '@questions/dto/create-question.dto';
 import { Question } from '@questions/entities/question.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PageOptionsDto } from '@root/common/dtos/page-options.dto';
 import { PageDto } from '@root/common/dtos/page.dto';
 import { Category } from '@questions/entities/category.enum';
@@ -20,6 +20,7 @@ import { FindOneParams } from '@questions/entities/findOneParams';
 import { UpdateQuestionDto } from '@questions/dto/update-question.dto';
 import { RoleGuard } from '@root/auth/guards /role.guard';
 import { Role } from '@root/users/entities/role.enum';
+import { number } from '@hapi/joi';
 
 @Controller('questions')
 @ApiTags('Questions')
@@ -35,6 +36,8 @@ export class QuestionsController {
   }
 
   @Get()
+  @ApiQuery({ name: 'importance', required: false, type: String })
+  @ApiQuery({ name: 'category', required: false, type: String })
   async getAllQuestions(
     @Query() pageOptionsDto: PageOptionsDto,
     @Query('importance') importance?: number,

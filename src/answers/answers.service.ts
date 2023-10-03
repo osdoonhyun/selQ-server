@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Answer } from '@answers/entities/answer.entity';
 import { CreateAnswerDto } from '@answers/dto/create-answer.dto';
+import { UpdateAnswerDto } from '@answers/dto/update-answer.dto';
 
 @Injectable()
 export class AnswersService {
@@ -35,5 +36,15 @@ export class AnswersService {
       'Answer with this questionId does not exist',
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async updateAnswer(
+    id: string,
+    updateAnswerDto: UpdateAnswerDto,
+  ): Promise<Answer> {
+    await this.answerRepository.update(id, updateAnswerDto);
+    const updatedAnswer = await this.answerRepository.findOneBy({ id });
+    if (updatedAnswer) return updatedAnswer;
+    throw new HttpException('Answer not found', HttpStatus.NOT_FOUND);
   }
 }
