@@ -40,8 +40,8 @@ export class QuestionsController {
   @ApiQuery({ name: 'category', required: false, type: String })
   async getAllQuestions(
     @Query() pageOptionsDto: PageOptionsDto,
-    @Query('importance') importance?: number,
-    @Query('category') category?: Category,
+    @Query('importance') importance?: number[],
+    @Query('category') category?: Category[],
   ): Promise<PageDto<Question>> {
     return await this.questionsService.getAllQuestions(
       pageOptionsDto,

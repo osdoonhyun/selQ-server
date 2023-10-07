@@ -29,8 +29,8 @@ export class QuestionsService {
 
   async getAllQuestions(
     pageOptionsDto: PageOptionsDto,
-    importance?: number,
-    category?: Category,
+    importance?: number[],
+    category?: Category[],
   ): Promise<PageDto<Question>> {
     const queryBuilder = await this.questionRepository.createQueryBuilder(
       'questions',
@@ -38,12 +38,32 @@ export class QuestionsService {
 
     queryBuilder.leftJoinAndSelect('questions.answers', 'answers');
 
-    if (importance) {
-      queryBuilder.where('questions.importance = :importance', { importance });
+    if (importance !== undefined) {
+      if (Array.isArray(importance)) {
+        // Handle multiple importance values
+        queryBuilder.andWhere('questions.importance IN (:...importance)', {
+          importance,
+        });
+      } else {
+        // Handle a single importance value
+        queryBuilder.andWhere('questions.importance = :importance', {
+          importance,
+        });
+      }
     }
 
-    if (category) {
-      queryBuilder.where('questions.category = :category', { category });
+    if (category !== undefined) {
+      if (Array.isArray(category)) {
+        // Handle multiple category values
+        queryBuilder.andWhere('questions.category IN (:...category)', {
+          category,
+        });
+      } else {
+        // Handle a single category value
+        queryBuilder.andWhere('questions.category = :category', {
+          category,
+        });
+      }
     }
 
     await queryBuilder
