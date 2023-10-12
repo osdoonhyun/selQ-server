@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -28,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
 import { GoogleAuthGuard } from '@root/auth/guards /google-auth.guard';
+import { Request } from 'express';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -47,8 +47,26 @@ export class AuthController {
     summary: '회원가입',
     description: '회원가입',
   })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.registerUser(createUserDto);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Req() req: Request,
+  ): Promise<User> {
+    // return await this.authService.registerUser(createUserDto);
+    const user = await this.authService.registerUser(createUserDto);
+    if (user) {
+      const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
+        user.id,
+      );
+      const { cookie: refreshTokenCookie, token: refreshToken } =
+        this.authService.getCookieWithJWTRefreshToken(user.id);
+
+      await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+
+      req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+      return user;
+    }
+
+    return user;
   }
 
   @HttpCode(200)

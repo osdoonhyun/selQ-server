@@ -7,9 +7,14 @@ import { BaseAPIDocument } from '@root/appconfig/swagger.document';
 import * as cookieParser from 'cookie-parser';
 import { TransformInterceptor } from '@root/common/interfaces/transform.interceptor';
 import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
+import { WinstonModule } from 'nest-winston';
+import { CustomLogger } from '@root/common/logger/custom-logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const customLogger = new CustomLogger();
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(customLogger.createLoggerConfig),
+  });
 
   const configService: ConfigService = app.get(ConfigService);
 

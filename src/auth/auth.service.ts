@@ -30,6 +30,9 @@ export class AuthService {
 
   public async registerUser(createUserDto: CreateUserDto): Promise<User> {
     try {
+      if (createUserDto.provider !== Provider.LOCAL) {
+        return await this.usersService.getUserByEmail(createUserDto.email);
+      }
       return await this.usersService.createUser(createUserDto);
     } catch (err) {
       if (err?.code === PostgresErrorCode.unique_violation) {

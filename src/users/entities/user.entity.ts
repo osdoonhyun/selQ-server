@@ -6,13 +6,14 @@ import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Role } from '@root/users/entities/role.enum';
 import { Exclude } from 'class-transformer';
+import { stringify } from 'ts-jest';
 
 @Entity()
 export class User extends CommonEntity {
   @Column()
   public username: string;
 
-  @Column()
+  @Column({ unique: true })
   public email: string;
 
   @Column({ nullable: true })
@@ -80,7 +81,6 @@ export class User extends CommonEntity {
         this.password = await bcrypt.hash(this.password, saltValue);
       }
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException();
     }
   }
