@@ -9,7 +9,6 @@ import { UsersService } from '@root/users/users.service';
 import { User } from '@root/users/entities/user.entity';
 import CreateUserDto from '@root/users/dto/create-user.dto';
 import { Provider } from '@root/users/entities/provider.enum';
-import { PostgresErrorCode } from '@root/database/postgresErrorCodes.enum';
 import { TokenPayloadInterface } from '@root/auth/interfaces /tokenPayload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -29,29 +28,7 @@ export class AuthService {
   ) {}
 
   public async registerUser(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      if (createUserDto.provider !== Provider.LOCAL) {
-        return await this.usersService.getUserByEmail(createUserDto.email);
-      }
-      return await this.usersService.createUser(createUserDto);
-    } catch (err) {
-      if (err?.code === PostgresErrorCode.unique_violation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      } else if (err?.code === PostgresErrorCode.not_null_violation) {
-        throw new HttpException(
-          'Please check not null body value',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      console.log(err);
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.usersService.createUser(createUserDto);
   }
 
   public async getAuthenticatedUser(email: string, password: string) {

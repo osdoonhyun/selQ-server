@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -27,7 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { LogInUserDto } from '@root/users/dto/logIn-user.dto';
 import { GoogleAuthGuard } from '@root/auth/guards /google-auth.guard';
-import { Request } from 'express';
+import { Response } from 'express';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -47,26 +48,8 @@ export class AuthController {
     summary: '회원가입',
     description: '회원가입',
   })
-  async createUser(
-    @Body() createUserDto: CreateUserDto,
-    @Req() req: Request,
-  ): Promise<User> {
-    // return await this.authService.registerUser(createUserDto);
-    const user = await this.authService.registerUser(createUserDto);
-    if (user) {
-      const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
-        user.id,
-      );
-      const { cookie: refreshTokenCookie, token: refreshToken } =
-        this.authService.getCookieWithJWTRefreshToken(user.id);
-
-      await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
-
-      req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
-      return user;
-    }
-
-    return user;
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.authService.registerUser(createUserDto);
   }
 
   @HttpCode(200)
@@ -167,7 +150,10 @@ export class AuthController {
   @HttpCode(200)
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleLoginCallback(@Req() req: RequestWithUser): Promise<any> {
+  async googleLoginCallback(
+    @Req() req: RequestWithUser,
+    @Res() res: Response,
+  ): Promise<any> {
     const { user } = req;
     const accessTokenCookie = this.authService.getCookieWithJWTAccessToken(
       user.id,
@@ -175,10 +161,12 @@ export class AuthController {
     const { cookie: refreshTokenCookie, token: refreshToken } =
       this.authService.getCookieWithJWTRefreshToken(user.id);
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
-    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
-    // return user;
+
+    res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
     const mainPageUrl = 'http://localhost:3000';
-    req.res.redirect(mainPageUrl);
+    res.send(
+      `<script>window.opener.postMessage('loginComplete', '${mainPageUrl}');window.close();</script>`,
+    );
     return user;
   }
 }

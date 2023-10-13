@@ -11,10 +11,12 @@ import { WinstonModule } from 'nest-winston';
 import { CustomLogger } from '@root/common/logger/custom-logger';
 
 async function bootstrap() {
-  const customLogger = new CustomLogger();
-  const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger(customLogger.createLoggerConfig),
-  });
+  // const customLogger = new CustomLogger();
+  // const app = await NestFactory.create(AppModule, {
+  //   logger: WinstonModule.createLogger(customLogger.createLoggerConfig),
+  // });
+
+  const app = await NestFactory.create(AppModule);
 
   const configService: ConfigService = app.get(ConfigService);
 
