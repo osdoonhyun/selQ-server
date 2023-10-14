@@ -1,0 +1,22 @@
+services:
+  nestjs_api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+#      - ${BACKEND_PORT}:${BACKEND_PORT}
+      # - 443:443
+      - 8000:8000
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
+    driver: bridge
